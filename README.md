@@ -110,13 +110,9 @@ The goal of this project was to simulate a real-world, scalable marketplace arch
 
 > 📺 **A full walkthrough video of the platform (Storefront + Admin + Seller + Customer panels) is available here:**
 
-<a href="https://www.linkedin.com/in/nasir-sarkar">
+<a href="https://lnkd.in/p/gMJH9xK2">
   <img src="https://img.shields.io/badge/%E2%96%B6%20WATCH%20FULL%20DEMO%20VIDEO-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=0A66C2" height="56" alt="Watch Full Demo Video" />
 </a>
-
-<br/><br/>
-
-<sub>🔗 <a href="https://www.linkedin.com/in/nasir-sarkar"><b>https://www.linkedin.com/in/nasir-sarkar</b></a></sub>
 
 </div>
 
@@ -677,7 +673,7 @@ npm run dev
 
 <br/>
 
-> This project was built as a personal deep-dive into designing a scalable, multi-role marketplace architecture, fully inspired by [ActiveItZone's e-commerce demo](https://demo.activeitzone.com/ecommerce/).
+> This project was inspired by **ActiveItZone**’s e-commerce demo. Its storefront concept, design direction, visuals, and product presentation were taken as references. It can be considered a partial clone or custom implementation of the original concept. Respect to the original for the inspiration. 🙌
 
 <p align="right"><a href="#readme-top">⬆ back to top</a></p>
 
