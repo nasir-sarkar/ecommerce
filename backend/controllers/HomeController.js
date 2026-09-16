@@ -1,6 +1,7 @@
 import Home    from '../models/Home.js';
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
+import FlashSale from '../models/FlashSale.js';
 
 const getDoc = async () => {
   let doc = await Home.findOne();
@@ -29,6 +30,14 @@ export const getHome = async (req, res) => {
   try {
     const doc = await getDoc();
     const plain = doc.toObject();
+
+    // Resolve the flash deal countdown live from FlashSale so it never goes stale
+    let liveFlashDealEnd = plain.flashDealEnd;
+    if (plain.flashDealBanner) {
+      const flashSaleDoc = await FlashSale.findOne();
+      const matchedDeal = flashSaleDoc?.deals?.find(d => d.img === plain.flashDealBanner);
+      if (matchedDeal) liveFlashDealEnd = matchedDeal.end;
+    }
 
     // Fetch products based on their attributes (dynamic)
     const featuredProductsSmall = await Product.find({ featured: true, published: true })
@@ -73,6 +82,7 @@ export const getHome = async (req, res) => {
 
     res.json({
       ...plain,
+      flashDealEnd: liveFlashDealEnd,
       featuredProductsSmall,
       bestSellingProducts,
       todayDealProducts,

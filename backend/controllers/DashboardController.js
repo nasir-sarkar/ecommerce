@@ -77,7 +77,7 @@ export const getDashboardStats = async (req, res) => {
           as: 'user',
         },
       },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      { $unwind: '$user' },
     ]);
     const topCustomers = topCustomersAgg.map((c) => c.user?.avatar || '');
 
