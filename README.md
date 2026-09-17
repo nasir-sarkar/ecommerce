@@ -673,7 +673,7 @@ npm run dev
 
 <br/>
 
-> This project was inspired by **ActiveItZone**’s e-commerce demo. Its storefront concept, design direction, visuals, and product presentation were taken as references. It can be considered a partial clone or custom implementation of the original concept. Respect to the original for the inspiration. 🙌
+> This project was inspired by **ActiveItZone**’s e-commerce demo. Its visual style, product presentation, visual assets, most of its features, and overall design were used as references, while all the code and implementation were developed by myself. 🙌
 
 <p align="right"><a href="#readme-top">⬆ back to top</a></p>
 
