@@ -219,6 +219,28 @@ export default function Customers_Admin() {
     setCustomers((prev) => prev.map((c) => c._id === updated._id ? updated : c))
   }
 
+  const handleBulkDelete = async () => {
+    const ids = Object.keys(checks).filter((id) => checks[id])
+    if (ids.length === 0) {
+      alert('Please select at least one customer to delete.')
+      return
+    }
+    if (!window.confirm(`Are you sure you want to delete ${ids.length} selected customer(s)?`)) return
+    try {
+      const res  = await fetch(`${API}/manage/users/bulk-delete`, {
+        method: 'DELETE', headers: getAuthHeader(), body: JSON.stringify({ ids }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setCustomers((prev) => prev.filter((c) => !ids.includes(c._id)))
+        setChecks({})
+        setAllChecked(false)
+      } else {
+        alert(data.message || 'Failed to delete selected customers')
+      }
+    } catch (err) { console.error(err) }
+  }
+
   // Tab filter
   const tabFiltered = customers.filter((c) => {
     const vs = resolveVerified(c)
@@ -300,7 +322,7 @@ export default function Customers_Admin() {
             </button>
             {bulkOpen && (
               <div className="absolute right-0 top-full mt-1 z-30 w-[160px] bg-white rounded-[6px] border border-[#f1f1f4] shadow-[0px_6px_14px_rgba(35,39,52,0.12)] py-1">
-                <a href="#" className="block px-[12px] py-[8px] text-[13px] text-[#f1416c] hover:bg-[#fff4f8]">Delete</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); setBulkOpen(false); handleBulkDelete() }} className="block px-[12px] py-[8px] text-[13px] text-[#f1416c] hover:bg-[#fff4f8]">Delete</a>
               </div>
             )}
           </div>

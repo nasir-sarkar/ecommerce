@@ -81,6 +81,16 @@ export const deleteUser = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 
+export const bulkDeleteUsers = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'No user ids provided' });
+    await User.deleteMany({ _id: { $in: ids } });
+    res.json({ success: true, message: 'Users deleted successfully' });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
 export const banUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
@@ -163,5 +173,15 @@ export const deleteSeller = async (req, res) => {
   try {
     await Seller.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Seller deleted' });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
+export const bulkDeleteSellers = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'No seller ids provided' });
+    await Seller.deleteMany({ _id: { $in: ids } });
+    res.json({ success: true, message: 'Sellers deleted successfully' });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };

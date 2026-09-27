@@ -2,8 +2,8 @@ import express from 'express';
 import { verifyToken, requireAdmin } from '../middleware/auth.js';
 import {
   getAdmins,  createAdmin,  updateAdmin,  deleteAdmin,
-  getUsers,   createUser,   updateUser,   deleteUser,   banUser,   setUserVerification,
-  getSellers, createSeller, updateSeller, deleteSeller, approveSeller,
+  getUsers,   createUser,   updateUser,   deleteUser,   banUser,   setUserVerification,   bulkDeleteUsers,
+  getSellers, createSeller, updateSeller, deleteSeller, approveSeller, bulkDeleteSellers,
 } from '../controllers/AdminController.js';
 
 const router = express.Router();
@@ -21,6 +21,7 @@ router.delete('/admins/:id',  deleteAdmin);
 router.get('/users',                     getUsers);
 router.post('/users',                    createUser);
 router.put('/users/:id',                 updateUser);
+router.delete('/users/bulk-delete',      bulkDeleteUsers);
 router.delete('/users/:id',              deleteUser);
 router.patch('/users/:id/ban',           banUser);
 router.patch('/users/:id/verification',  setUserVerification);
@@ -29,6 +30,7 @@ router.patch('/users/:id/verification',  setUserVerification);
 router.get('/sellers',              getSellers);
 router.post('/sellers',             createSeller);
 router.put('/sellers/:id',          updateSeller);
+router.delete('/sellers/bulk-delete', bulkDeleteSellers);
 router.delete('/sellers/:id',       deleteSeller);
 router.patch('/sellers/:id/approve', approveSeller);
 

@@ -175,7 +175,7 @@ export default function AllSellers_Admin() {
       setLoading(true)
       try {
         const [sellersRes, productsRes] = await Promise.all([
-          fetch(`${API}/manage/sellers?verified=true`, { headers: getAuthHeader() }),
+          fetch(`${API}/manage/sellers`, { headers: getAuthHeader() }),
           fetch(`${API}/products?limit=9999`, { headers: getAuthHeader() }),
         ])
         const sellersData  = await sellersRes.json()
@@ -202,6 +202,28 @@ export default function AllSellers_Admin() {
     setSellers((prev) => prev.filter((s) => s._id !== id))
   }
 
+  const handleBulkDelete = async () => {
+    const ids = Object.keys(checks).filter((id) => checks[id])
+    if (ids.length === 0) {
+      alert('Please select at least one seller to delete.')
+      return
+    }
+    if (!window.confirm(`Are you sure you want to delete ${ids.length} selected seller(s)?`)) return
+    try {
+      const res  = await fetch(`${API}/manage/sellers/bulk-delete`, {
+        method: 'DELETE', headers: getAuthHeader(), body: JSON.stringify({ ids }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setSellers((prev) => prev.filter((s) => !ids.includes(s._id)))
+        setChecks({})
+        setAllChecked(false)
+      } else {
+        alert(data.message || 'Failed to delete selected sellers')
+      }
+    } catch (err) { console.error(err) }
+  }
+
   const handleToggle = (id, val) => {
     
     if (!val) {
@@ -213,12 +235,18 @@ export default function AllSellers_Admin() {
 
   const filtered = sellers.filter((s) => {
     const q = search.toLowerCase()
-    return (
+    const matchesSearch = (
       (s.shopName  || '').toLowerCase().includes(q) ||
       (s.fullName  || '').toLowerCase().includes(q) ||
       (s.email     || '').toLowerCase().includes(q) ||
       (s.phone     || '').toLowerCase().includes(q)
     )
+    if (!matchesSearch) return false
+    if (verifyFilter === 'Verified' && !s.isVerified) return false
+    if (verifyFilter === 'Unverified' && s.isVerified) return false
+    if (approveFilter === 'Approved' && !s.isVerified) return false
+    if (approveFilter === 'Non-Approved' && s.isVerified) return false
+    return true
   })
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE))
@@ -260,8 +288,7 @@ export default function AllSellers_Admin() {
             </button>
             {bulkOpen && (
               <div className="absolute left-0 top-full mt-1 z-30 w-[200px] bg-white rounded-[6px] border border-[#f1f1f4] shadow-[0px_6px_14px_rgba(35,39,52,0.12)] py-1">
-                <a href="#" className="block px-[12px] py-[8px] text-[13px] text-[#232734] hover:bg-[#f1fafd]">Delete selection</a>
-                <a href="#" className="block px-[12px] py-[8px] text-[13px] text-[#232734] hover:bg-[#f1fafd]">Set Bulk Commission</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); setBulkOpen(false); handleBulkDelete() }} className="block px-[12px] py-[8px] text-[13px] text-[#232734] hover:bg-[#f1fafd]">Delete selection</a>
               </div>
             )}
           </div>
