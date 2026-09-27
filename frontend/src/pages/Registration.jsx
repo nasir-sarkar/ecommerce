@@ -64,15 +64,15 @@ export default function Register() {
           </div>
 
           {/* RIGHT FORM */}
-          <div className="p-6 sm:p-8 lg:p-10 flex flex-col justify-center">
+          <div className="p-5 sm:p-6 lg:p-6 flex flex-col justify-center">
 
             {/* LOGO */}
-            <div className="w-12 mb-3">
+            <div className="w-12 mb-2">
               <img src={LOGO} alt="logo" className="w-full h-full object-contain" />
             </div>
 
             {/* TITLE */}
-            <h1 className="text-[20px] sm:text-[24px] font-bold text-[#0080FF] uppercase mb-4">
+            <h1 className="text-[20px] sm:text-[24px] font-bold text-[#0080FF] uppercase mb-3">
               Create an account.
             </h1>
 
@@ -83,7 +83,7 @@ export default function Register() {
             )}
 
             {/* FORM */}
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-2" onSubmit={handleSubmit}>
 
               {/* NAME */}
               <div>
@@ -94,7 +94,7 @@ export default function Register() {
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
                   required
-                  className="w-full border border-gray-300 px-3 py-2 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
+                  className="w-full border border-gray-300 px-3 py-1.5 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
                 />
               </div>
 
@@ -108,7 +108,7 @@ export default function Register() {
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                     required
-                    className="w-full border border-gray-300 px-3 py-2 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
+                    className="w-full border border-gray-300 px-3 py-1.5 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
                   />
                 </div>
               ) : (
@@ -120,7 +120,7 @@ export default function Register() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    className="w-full border border-gray-300 px-3 py-2 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
+                    className="w-full border border-gray-300 px-3 py-1.5 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
                   />
                 </div>
               )}
@@ -146,7 +146,7 @@ export default function Register() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
-                    className="w-full border border-gray-300 px-3 py-2 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
+                    className="w-full border border-gray-300 px-3 py-1.5 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
                   />
                   <span onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 select-none flex items-center">
                     {showPass ? (
@@ -169,7 +169,7 @@ export default function Register() {
                     value={confirm}
                     onChange={e => setConfirm(e.target.value)}
                     required
-                    className="w-full border border-gray-300 px-3 py-2 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
+                    className="w-full border border-gray-300 px-3 py-1.5 mt-1 text-[14px] outline-none focus:border-[#0080FF]"
                   />
                   <span onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 select-none flex items-center">
                     {showConfirm ? (
@@ -201,13 +201,13 @@ export default function Register() {
             </form>
 
             {/* LOGIN */}
-            <p className="text-[13px] text-gray-500 mt-4">
+            <p className="text-[13px] text-gray-500 mt-3">
               Already have an account?
               <Link to="/login" className="ml-1 text-[14px] font-bold text-[#0080FF] hover:underline">Log In</Link>
             </p>
 
             {/* BACK */}
-            <div className="mt-4">
+            <div className="mt-3">
               <Link to="/" className="flex items-center gap-1 text-[14px] font-bold text-[#0080FF] hover:underline">
                 ← Back to Previous Page
               </Link>
