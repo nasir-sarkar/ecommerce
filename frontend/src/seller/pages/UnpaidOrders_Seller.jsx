@@ -110,6 +110,31 @@ export default function UnpaidOrders_Seller() {
     }
   }
 
+  const handleBulkDelete = async () => {
+    const ids = Object.keys(checks).filter(id => checks[id])
+    if (ids.length === 0) return
+    if (!window.confirm('Are you sure you want to delete the selected orders?')) return
+    setBulkOpen(false)
+    const token = localStorage.getItem('ec_token')
+    try {
+      const res  = await fetch(`${API_URL}/orders/seller/bulk-delete`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ids }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setOrders(prev => prev.filter(o => !ids.includes(o._id)))
+        setChecks({})
+        setAllChecked(false)
+      } else {
+        alert(data.message || 'Failed to delete orders')
+      }
+    } catch {
+      alert('Network error')
+    }
+  }
+
   // Only unpaid orders
   const filtered = orders.filter(o => {
     if ((o.paymentStatus || 'unpaid').toLowerCase() !== 'unpaid') return false
@@ -180,7 +205,7 @@ export default function UnpaidOrders_Seller() {
                 </button>
                 {bulkOpen && (
                   <div className="absolute top-full right-0 mt-1 bg-white shadow-md border border-[#f1f1f4] rounded-[4px] z-10 min-w-[120px]">
-                    <a href="#" className="block px-4 py-2 text-[#a1a5b3] text-[14px] font-medium hover:bg-[#f5f5f7]">Export</a>
+                    <button onClick={handleBulkDelete} type="button" className="block w-full text-left px-4 py-2 text-[#a1a5b3] text-[14px] font-medium hover:bg-[#f5f5f7]">Delete Selected</button>
                   </div>
                 )}
               </div>

@@ -331,6 +331,61 @@ export const adminDeleteOrder = async (req, res) => {
 };
 
 
+// DELETE /api/orders/:id/seller-delete  (seller — delete own items from an order)
+export const sellerDeleteOrder = async (req, res) => {
+  try {
+    const sellerName = req.user.shopName || req.user.fullName || req.user.email;
+    const order = await Order.findById(req.params.id);
+    if (!order)
+      return res.status(404).json({ success: false, message: 'Order not found' });
+
+    const hasSellersItem = order.items.some(i => i.seller === sellerName);
+    if (!hasSellersItem)
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+
+    const remainingItems = order.items.filter(i => i.seller !== sellerName);
+    if (remainingItems.length === 0) {
+      await Order.findByIdAndDelete(order._id);
+    } else {
+      order.items = remainingItems;
+      order.totalAmount = remainingItems.reduce((sum, i) => sum + i.price * i.qty, 0);
+      await order.save();
+    }
+
+    res.json({ success: true, message: 'Order deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+// DELETE /api/orders/seller/bulk-delete  (seller — delete own items from multiple orders)
+export const sellerBulkDeleteOrders = async (req, res) => {
+  try {
+    const sellerName = req.user.shopName || req.user.fullName || req.user.email;
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'No order ids provided' });
+
+    const orders = await Order.find({ _id: { $in: ids } });
+    for (const order of orders) {
+      const remainingItems = order.items.filter(i => i.seller !== sellerName);
+      if (remainingItems.length === 0) {
+        await Order.findByIdAndDelete(order._id);
+      } else if (remainingItems.length !== order.items.length) {
+        order.items = remainingItems;
+        order.totalAmount = remainingItems.reduce((sum, i) => sum + i.price * i.qty, 0);
+        await order.save();
+      }
+    }
+
+    res.json({ success: true, message: 'Orders deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
 // POST /api/orders/admin/bulk-delete  (admin — delete multiple orders)
 export const adminBulkDeleteOrders = async (req, res) => {
   try {

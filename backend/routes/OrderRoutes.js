@@ -8,6 +8,8 @@ import {
   reorderItems,
   getSellerOrders,
   updateOrderStatus,
+  sellerDeleteOrder,
+  sellerBulkDeleteOrders,
   adminGetAllOrders,
   adminGetOrder,
   adminUpdateOrderStatus,
@@ -28,6 +30,8 @@ router.post('/:id/reorder',    verifyToken, reorderItems);
 // Seller routes
 router.get('/seller',       verifyToken, getSellerOrders);
 router.patch('/:id/status', verifyToken, updateOrderStatus);
+router.delete('/seller/bulk-delete', verifyToken, sellerBulkDeleteOrders);
+router.delete('/:id/seller-delete',  verifyToken, sellerDeleteOrder);
 
 // Admin routes
 router.get('/admin/all',             verifyToken, requireAdmin, adminGetAllOrders);
