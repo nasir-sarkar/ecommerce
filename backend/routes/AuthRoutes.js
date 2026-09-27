@@ -5,6 +5,7 @@ import {
   loginUser, 
   loginSeller, 
   registerUser, 
+  registerSeller,
   updateProfile, 
   changePassword,
   getUserProfile,
@@ -25,6 +26,7 @@ router.post('/login/admin',     loginAdmin);
 router.post('/login/user',      loginUser);
 router.post('/login/seller',    loginSeller);
 router.post('/register',        registerUser);
+router.post('/register/seller', registerSeller);
 
 // Profile routes
 router.get('/profile',          verifyToken, getUserProfile);

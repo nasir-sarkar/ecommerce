@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Login_Admin  from './admin/pages/Login_Admin'
 import Login_User   from './user/pages/Login_User'
 import Login_Seller from './seller/pages/Login_Seller'
+import Registration_Seller from './seller/pages/Registration_Seller'
 import Home from './pages/Home'
 import Blogs from './pages/Blogs'
 import Brands from './pages/Brands'
@@ -125,7 +126,7 @@ function Layout() {
   const adminRoutes       = ['/admin']
   const sellerPanelRoutes = ['/seller/dashboard', '/seller/products', '/seller/orders', '/seller/reviews', '/seller/settings', '/seller/profile', '/seller/refund', '/seller/pickup-point', '/seller/unpaid', '/seller/rating']
   const userPanelRoutes   = ['/user']
-  const noLayoutRoutes    = ['/registration', '/login', '/seller-login', adminLoginPath, userLoginPath, sellerLoginPath]
+  const noLayoutRoutes    = ['/registration', '/login', '/seller-login', adminLoginPath, userLoginPath, sellerLoginPath, '/seller/pages/registration']
 
   const isAdminRoute       = adminRoutes.some(r => path.startsWith(r)) && !isAdminLogin
   const isSellerPanelRoute = sellerPanelRoutes.some(r => path.startsWith(r)) && !isSellerLogin
@@ -234,6 +235,7 @@ function Layout() {
         <Route path="/admin/pages/login"   element={<Login_Admin />} />
         <Route path="/user/pages/login"    element={<Login_User />} />
         <Route path="/seller/pages/login"  element={<Login_Seller />} />
+        <Route path="/seller/pages/registration" element={<Registration_Seller />} />
       </Routes>
     )
   }

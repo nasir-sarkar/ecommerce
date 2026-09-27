@@ -176,6 +176,55 @@ export const registerUser = async (req, res) => {
   }
 };
 
+// SELLER SELF-REGISTRATION
+export const registerSeller = async (req, res) => {
+  try {
+    const { fullName, shopName, email, address, phone, password } = req.body;
+    if (!fullName || !shopName || !email || !phone || !password)
+      return res.status(400).json({ success: false, message: 'Full name, shop name, email, phone, and password are required' });
+
+    const exists = await Seller.findOne({ email });
+    if (exists) return res.status(400).json({ success: false, message: 'Email already registered' });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const seller = await Seller.create({
+      fullName,
+      shopName,
+      email,
+      phone,
+      password: hashed,
+      avatar: '',
+    });
+
+    const payload = {
+      id: seller._id.toString(),
+      role: 'seller',
+      email: seller.email || '',
+      fullName: seller.fullName,
+      shopName: seller.shopName,
+      phone: seller.phone || '',
+      avatar: seller.avatar || '',
+    };
+    const token = generateToken(payload);
+
+    res.status(201).json({
+      success: true,
+      token,
+      role: 'seller',
+      user: {
+        id: seller._id.toString(),
+        fullName: seller.fullName,
+        email: seller.email || '',
+        shopName: seller.shopName,
+        phone: seller.phone || '',
+        avatar: seller.avatar || '',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 // GET USER PROFILE — supports admin, seller, and user roles
 export const getUserProfile = async (req, res) => {
   try {

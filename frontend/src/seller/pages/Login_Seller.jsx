@@ -177,7 +177,7 @@ export default function Login_Seller() {
                     <p className="text-[12px] text-[#9d9da6] mb-0">
                       Dont have an account?
                       <Link
-                        to="/registration"
+                        to="/seller/pages/registration"
                         className="ml-[0.5rem] text-[14px] font-bold hover:underline"
                         style={{ color: '#1b84ff' }}
                       >
