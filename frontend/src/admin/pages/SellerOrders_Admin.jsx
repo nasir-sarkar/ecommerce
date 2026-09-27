@@ -53,7 +53,7 @@ function fmtCode(order) {
 }
 
 // Single order row
-function OrderRow({ order, checked, onCheck, isLast }) {
+function OrderRow({ order, checked, onCheck, onDelete, isLast }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
 
@@ -116,8 +116,7 @@ function OrderRow({ order, checked, onCheck, isLast }) {
           <div className="absolute right-2 top-full mt-1 z-20 w-[140px] bg-white rounded-[6px] shadow-[0px_6px_14px_rgba(35,39,52,0.12)] border border-[#f1f1f4] py-1 text-left">
             <button type="button" onClick={() => { setMenuOpen(false); navigate(`/admin/sales/orders/view/${order._id}`) }}
               className="block w-full text-left px-[12px] py-[6px] text-[12px] text-[#232734] hover:bg-[#f1fafd]">View</button>
-            <a href="#" className="block px-[12px] py-[6px] text-[12px] text-[#232734] hover:bg-[#f1fafd]">Invoice</a>
-            <a href="#" className="block px-[12px] py-[6px] text-[12px] text-[#f1416c] hover:bg-[#fff4f8]">Delete</a>
+            <a href="#" onClick={e => { e.preventDefault(); setMenuOpen(false); onDelete?.(order._id) }} className="block px-[12px] py-[6px] text-[12px] text-[#f1416c] hover:bg-[#fff4f8]">Delete</a>
           </div>
         )}
       </td>
@@ -125,24 +124,14 @@ function OrderRow({ order, checked, onCheck, isLast }) {
   )
 }
 
-function OrdersTable({ orders }) {
-  const [allChecked, setAllChecked] = useState(false)
-  const [checks, setChecks] = useState({})
-
-  const toggleAll = v => {
-    setAllChecked(v)
-    const next = {}
-    orders.forEach(o => { next[o._id] = v })
-    setChecks(next)
-  }
-
+function OrdersTable({ orders, checks, allChecked, onToggleAll, onCheckOne, onDeleteOrder }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-[#eaeaef]">
             <th className="px-[12px] py-[12px] text-center w-[40px]">
-              <input type="checkbox" checked={allChecked} onChange={e => toggleAll(e.target.checked)}
+              <input type="checkbox" checked={allChecked} onChange={e => onToggleAll(e.target.checked)}
                 className="w-[16px] h-[16px] rounded-[3px] accent-[#009ef7]" />
             </th>
             <th className="px-[12px] py-[12px] text-left text-[11px] font-semibold text-[#9da3ae] uppercase tracking-wide whitespace-nowrap">ORDER CODE:</th>
@@ -168,7 +157,8 @@ function OrdersTable({ orders }) {
           ) : (
             orders.map((o, idx) => (
               <OrderRow key={o._id} order={o} checked={!!checks[o._id]}
-                onCheck={v => setChecks(prev => ({ ...prev, [o._id]: v }))}
+                onCheck={v => onCheckOne(o._id, v)}
+                onDelete={onDeleteOrder}
                 isLast={idx === orders.length - 1} />
             ))
           )}
@@ -193,7 +183,7 @@ function TabsRow({ tabs, activeTab, onChange }) {
   )
 }
 
-function ToolbarRow({ search, onSearch, deliveryFilter, onDeliveryFilter, paymentFilter, onPaymentFilter }) {
+function ToolbarRow({ search, onSearch, deliveryFilter, onDeliveryFilter, paymentFilter, onPaymentFilter, onBulkDelete }) {
   const [bulkOpen, setBulkOpen] = useState(false)
   const [deliveryOpen, setDeliveryOpen] = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
@@ -216,8 +206,7 @@ function ToolbarRow({ search, onSearch, deliveryFilter, onDeliveryFilter, paymen
         </button>
         {bulkOpen && (
           <div className="absolute right-0 top-full mt-1 z-30 w-[180px] bg-white rounded-[6px] border border-[#f1f1f4] shadow-[0px_6px_14px_rgba(35,39,52,0.12)] py-1">
-            <a href="#" className="block px-[12px] py-[8px] text-[13px] text-[#232734] hover:bg-[#f1fafd]">Export</a>
-            <a href="#" className="block px-[12px] py-[8px] text-[13px] text-[#f1416c] hover:bg-[#fff4f8]">Delete selection</a>
+            <a href="#" onClick={e => { e.preventDefault(); setBulkOpen(false); onBulkDelete?.() }} className="block px-[12px] py-[8px] text-[13px] text-[#f1416c] hover:bg-[#fff4f8]">Delete selection</a>
           </div>
         )}
       </div>
@@ -270,6 +259,8 @@ export default function SellerOrders_Admin() {
   const [deliveryFilter, setDeliveryFilter] = useState('All')
   const [paymentFilter, setPaymentFilter]   = useState('All')
   const [page, setPage]             = useState(1)
+  const [checks, setChecks]         = useState({})
+  const [allChecked, setAllChecked] = useState(false)
   const PER_PAGE = 20
 
   const tabs = ['Seller']
@@ -316,6 +307,68 @@ export default function SellerOrders_Admin() {
   const totalPages = Math.ceil(filtered.length / PER_PAGE)
   const paginated  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
+  const toggleAll = v => {
+    setAllChecked(v)
+    const next = {}
+    paginated.forEach(o => { next[o._id] = v })
+    setChecks(next)
+  }
+
+  const toggleOne = (id, v) => {
+    setChecks(prev => ({ ...prev, [id]: v }))
+  }
+
+  const handleDeleteOrder = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this order?')) return
+    const token = localStorage.getItem('ec_token')
+    try {
+      const res = await fetch(`${API_URL}/orders/admin/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const d = await res.json()
+      if (d.success) {
+        setOrders(prev => prev.filter(o => o._id !== id))
+        setChecks(prev => {
+          const next = { ...prev }
+          delete next[id]
+          return next
+        })
+      } else {
+        alert(d.message || 'Failed to delete order')
+      }
+    } catch {
+      alert('Network error. Please try again.')
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    const ids = Object.keys(checks).filter(id => checks[id])
+    if (ids.length === 0) {
+      alert('Please select at least one order to delete.')
+      return
+    }
+    if (!window.confirm(`Are you sure you want to delete ${ids.length} selected order(s)?`)) return
+    const token = localStorage.getItem('ec_token')
+    try {
+      const res = await fetch(`${API_URL}/orders/admin/bulk-delete`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ids }),
+      })
+      const d = await res.json()
+      if (d.success) {
+        setOrders(prev => prev.filter(o => !ids.includes(o._id)))
+        setChecks({})
+        setAllChecked(false)
+      } else {
+        alert(d.message || 'Failed to delete selected orders')
+      }
+    } catch {
+      alert('Network error. Please try again.')
+    }
+  }
+
   return (
     <>
       <h1 className="text-[20px] leading-[28px] font-bold text-[#232734] mb-[16px]">Seller Orders</h1>
@@ -325,13 +378,14 @@ export default function SellerOrders_Admin() {
           search={search} onSearch={v => { setSearch(v); setPage(1) }}
           deliveryFilter={deliveryFilter} onDeliveryFilter={v => { setDeliveryFilter(v); setPage(1) }}
           paymentFilter={paymentFilter} onPaymentFilter={v => { setPaymentFilter(v); setPage(1) }}
+          onBulkDelete={handleBulkDelete}
         />
         {loading ? (
           <div className="flex justify-center py-[60px] text-[14px] text-[#9da3ae]">Loading orders…</div>
         ) : error ? (
           <div className="flex justify-center py-[60px] text-[14px] text-[#f1416c]">{error}</div>
         ) : (
-          <OrdersTable orders={paginated} />
+          <OrdersTable orders={paginated} checks={checks} allChecked={allChecked} onToggleAll={toggleAll} onCheckOne={toggleOne} onDeleteOrder={handleDeleteOrder} />
         )}
         {!loading && !error && filtered.length > PER_PAGE && (
           <Pagination current={page} total={totalPages} onChange={setPage} />
