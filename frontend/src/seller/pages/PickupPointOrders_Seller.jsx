@@ -217,8 +217,8 @@ export default function PickupPointOrders_Seller() {
                   </svg>
                 </button>
                 {bulkOpen && (
-                  <div className="absolute top-full right-0 mt-1 bg-white shadow-md border border-[#f1f1f4] rounded-[4px] z-10 min-w-[120px]">
-                    <button onClick={handleBulkDelete} type="button" className="block w-full text-left px-4 py-2 text-[#f1416c] text-[14px] font-medium hover:bg-[#fff4f8]">Delete Selected</button>
+                  <div className="absolute top-full right-0 mt-1 bg-white shadow-md border border-[#f1f1f4] rounded-[4px] z-10 min-w-[160px]">
+                    <button onClick={handleBulkDelete} type="button" className="block w-full text-left whitespace-nowrap px-4 py-2 text-[#f1416c] text-[14px] font-medium hover:bg-[#fff4f8]">Delete selection</button>
                   </div>
                 )}
               </div>
