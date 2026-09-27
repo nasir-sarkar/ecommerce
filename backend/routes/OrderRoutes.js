@@ -12,6 +12,8 @@ import {
   adminGetOrder,
   adminUpdateOrderStatus,
   adminUpdatePaymentStatus,
+  adminDeleteOrder,
+  adminBulkDeleteOrders,
 } from '../controllers/OrderController.js';
 
 const router = express.Router();
@@ -32,5 +34,7 @@ router.get('/admin/all',             verifyToken, requireAdmin, adminGetAllOrder
 router.get('/admin/:id',             verifyToken, requireAdmin, adminGetOrder);
 router.patch('/admin/:id/status',    verifyToken, requireAdmin, adminUpdateOrderStatus);
 router.patch('/admin/:id/payment',   verifyToken, requireAdmin, adminUpdatePaymentStatus);
+router.delete('/admin/bulk-delete',  verifyToken, requireAdmin, adminBulkDeleteOrders);
+router.delete('/admin/:id',          verifyToken, requireAdmin, adminDeleteOrder);
 
 export default router;

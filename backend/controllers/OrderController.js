@@ -315,3 +315,32 @@ export const adminUpdatePaymentStatus = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
+// DELETE /api/orders/admin/:id  (admin — delete a single order)
+export const adminDeleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndDelete(req.params.id);
+    if (!order)
+      return res.status(404).json({ success: false, message: 'Order not found' });
+
+    res.json({ success: true, message: 'Order deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+// POST /api/orders/admin/bulk-delete  (admin — delete multiple orders)
+export const adminBulkDeleteOrders = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids) || ids.length === 0)
+      return res.status(400).json({ success: false, message: 'No order ids provided' });
+
+    await Order.deleteMany({ _id: { $in: ids } });
+    res.json({ success: true, message: 'Orders deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
