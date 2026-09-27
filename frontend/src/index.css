@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap');
+
+
+
+/* CSS Variables matching original site */
+:root {
+  --primary: #0080FF;
+  --hov-primary: #0066CC;
+  --secondary-base: #17171f;
+  --gray: #9d9da6;
+  --light: #f5f5f5;
+  --dark: #292933;
+  --success: #85b567;
+  --warning: #f3af3d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Public Sans', 'Inter', sans-serif;
+  font-weight: 400;
+  color: #292933;
+  background-color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+
+
+/* Top banner scroll */
+@keyframes scrollText {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.top-banner-scroll {
+  animation: scrollText 35s linear infinite;
+  display: inline-flex;
+}
+
+
+
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+
+
+/* Carousel buttons */
+.carousel-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #dfdfe6;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.carousel-btn:hover {
+  background: #0080FF; color: white; border-color: #0080FF;
+}
+
+
+
+
+/* Product card */
+.product-card { transition: box-shadow 0.2s; }
+.product-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+
+
+
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #9d9da6; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+
+
+
+/* Prose styles for product description */
+.product-desc h2 { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #292933; }
+.product-desc p { margin-bottom: 10px; font-size: 14px; color: #555; line-height: 1.7; }
+.product-desc ul { margin: 0 0 10px 20px; list-style: disc; }
+.product-desc li { margin-bottom: 4px; font-size: 14px; color: #555; }
+.product-desc strong { font-weight: 700; color: #292933; }
+
+
+
+/* Star rating */
+.star-filled { color: #f3af3d; }
+.star-empty { color: #dfdfe6; }
+
+
+
+
+/* Nav link active underline */
+.nav-link-underline { position: relative; }
+.nav-link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 12px; right: 12px;
+  height: 2px;
+  background: #0080FF;
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+.nav-link-underline:hover::after,
+.nav-link-underline.active::after { transform: scaleX(1); }
