@@ -241,7 +241,7 @@ The goal of this project was to simulate a real-world, scalable marketplace arch
 
 <table>
 <tr>
-<td valign="bottom" width="50%">
+<td valign="top" width="50%">
 
 ### ⚛️ Frontend
 
@@ -250,12 +250,8 @@ The goal of this project was to simulate a real-world, scalable marketplace arch
 - 🎨 Tailwind CSS
 - 🧭 React Router DOM
 
-<br/>
-
-<img src="https://skillicons.dev/icons?i=react,tailwind,vite,js,html,css&theme=dark&perline=6" alt="Frontend icons" />
-
 </td>
-<td valign="bottom" width="50%">
+<td valign="top" width="50%">
 
 ### 🟢 Backend
 
@@ -268,7 +264,15 @@ The goal of this project was to simulate a real-world, scalable marketplace arch
 - 🌐 CORS
 - ⚙️ dotenv
 
-<br/>
+</td>
+</tr>
+<tr>
+<td valign="top" width="50%">
+
+<img src="https://skillicons.dev/icons?i=react,tailwind,vite,js,html,css&theme=dark&perline=6" alt="Frontend icons" />
+
+</td>
+<td valign="top" width="50%">
 
 <img src="https://skillicons.dev/icons?i=nodejs,express,mongodb,npm,git,github&theme=dark&perline=6" alt="Backend icons" />
 
